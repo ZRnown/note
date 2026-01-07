@@ -45,9 +45,5 @@ jobs:
         with:
           name: app-${{ matrix.platform }}
           path: |
-            src-tauri/target/*/bundle/*.dmg
-            src-tauri/target/*/bundle/*.app
-            src-tauri/target/*/bundle/*.exe
-            src-tauri/target/*/bundle/*.deb
-            src-tauri/target/*/bundle/*.AppImage
+            src-tauri/target/**/bundle/**
           if-no-files-found: ignore
