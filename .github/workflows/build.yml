@@ -41,19 +41,22 @@ jobs:
         run: npx --package @tauri-apps/cli tauri build
 
       - name: Package portable bundle (zip)
+        shell: pwsh
         run: |
-          pwsh -NoProfile -Command "
-            $bundles = Get-ChildItem -Path src-tauri/target -Recurse -Directory | Where-Object { $_.Name -eq 'bundle' }
-            if ($bundles.Count -eq 0) { Write-Host 'No bundle directory found'; exit 0 }
-            $first = $bundles[0].FullName
-            Write-Host 'Found bundle at' $first
-            Compress-Archive -Path (Join-Path $first '*') -DestinationPath portable-bundle.zip -Force
-          "
+          $bundles = Get-ChildItem -Path src-tauri/target -Recurse -Directory | Where-Object { $_.Name -eq 'bundle' }
+          if ($bundles.Count -eq 0) {
+            Write-Host 'No bundle directory found'
+            exit 0
+          }
+          $first = $bundles[0].FullName
+          Write-Host "Found bundle at $first"
+          Compress-Archive -Path (Join-Path $first '*') -DestinationPath portable-bundle.zip -Force
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-${{ matrix.platform }}
+          name: app-windows
           path: |
             src-tauri/target/**/bundle/**
+            portable-bundle.zip
           if-no-files-found: ignore
